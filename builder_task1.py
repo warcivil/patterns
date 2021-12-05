@@ -9,32 +9,26 @@ class Person:
         self.company_name = None
         self.position = None
         self.annual_income = None
-
+        
     def __str__(self) -> str:
         return f'Address: {self.street_address}, {self.postcode}, {self.city}\n' +\
-            f'Employed at {self.company_name} as a {self.postcode} earning {self.annual_income}'
+            f'Employed at {self.company_name} as a {self.postcode} earning {self.annual_income}'\
+            f'position {self.position}'
 
-
-class PersonBuilder:  # facade
+class PersonBuilder:
     def __init__(self, person=None):
         if person is None:
             self.person = Person()
         else:
             self.person = person
-
-    @property
     def lives(self):
-        return PersonAddressBuilder(self.person)
-
-    @property
+        return PersonLivesBuilder(self.person)
     def works(self):
-        return PersonJobBuilder(self.person)
-
+        return PersonWorksBuilder(self.person)
     def build(self):
         return self.person
 
-
-class PersonJobBuilder(PersonBuilder):
+class PersonWorksBuilder(PersonBuilder):
     def __init__(self, person):
         super().__init__(person)
 
@@ -51,7 +45,7 @@ class PersonJobBuilder(PersonBuilder):
         return self
 
 
-class PersonAddressBuilder(PersonBuilder):
+class PersonLivesBuilder(PersonBuilder):
     def __init__(self, person):
         super().__init__(person)
 
@@ -67,19 +61,6 @@ class PersonAddressBuilder(PersonBuilder):
         self.person.city = city
         return self
 
-
 if __name__ == '__main__':
-    pb = PersonBuilder()
-    p = pb\
-        .lives\
-            .at('123 London Road')\
-            .in_city('London')\
-            .with_postcode('SW12BC')\
-        .works\
-            .at('Fabrikam')\
-            .as_a('Engineer')\
-            .earning(123000)\
-        .build()
-    print(p)
-    person2 = PersonBuilder().build()
-    print(person2)
+    pb = PersonBuilder().works().as_a('a').at('b').lives().in_city('c')
+    print(pb)
